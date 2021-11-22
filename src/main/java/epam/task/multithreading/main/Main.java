@@ -1,10 +1,8 @@
-package epam.task.multithreading;
+package epam.task.multithreading.main;
 
 import epam.task.multithreading.entity.*;
 
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 public class Main {

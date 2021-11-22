@@ -16,9 +16,9 @@ public class Barge {
     private final int MAX_AREA = 20000;
     private final int MIN_LIFTING_CAPACITY = 0;
     private final int MIN_AREA = 0;
+    public static int count;
     private int weightCounter = 0;
     private int sizeCounter = 0;
-    public static int count;
 
 
     public void add(int count) {
@@ -26,48 +26,38 @@ public class Barge {
     }
 
     public boolean add(Car car) {
-        try {
-            if (weightCounter <= MAX_LIFTING_CAPACITY && sizeCounter <= MAX_AREA) {
+        if (weightCounter <= MAX_LIFTING_CAPACITY && sizeCounter <= MAX_AREA) {
 
-                bargeCars.add(car);
-                weightCounter += car.getCarWeight();
-                sizeCounter += car.getCarSize();
-                count++;
-                logger.info("car " + car.getType() + " was loaded into the platform: " + Thread.currentThread().getName() + car.getCarWeight() + " " + car.getCarSize());
+            bargeCars.add(car);
+            weightCounter += car.getCarWeight();
+            sizeCounter += car.getCarSize();
+            count++;
+            logger.info("car " + car.getType() + " was loaded into the platform: " + Thread.currentThread().getName() + car.getCarWeight() + " " + car.getCarSize());
 
 
-            } else {
-                logger.warn("not enough storage or space  " + " Weight " + weightCounter + " Size " + sizeCounter);
-                carQueue.add(car);
-                logger.info("Cars in the queue " + carQueue.size());
+        } else {
+            logger.warn("not enough storage or space  " + " Weight " + weightCounter + " Size " + sizeCounter);
+            carQueue.add(car);
+            logger.info("Cars in the queue " + carQueue.size());
 
-                return false;
-            }
-        } finally {
-
+            return false;
         }
         return true;
+
     }
 
 
-    public Car get(Car.Type type) throws InterruptedException {
-        try {
-            if (weightCounter >= MIN_LIFTING_CAPACITY || sizeCounter >= MIN_AREA) {
+    public Car get(Car.Type type) {
+        if (weightCounter >= MIN_LIFTING_CAPACITY || sizeCounter >= MIN_AREA) {
 
-                for (Car car : bargeCars) {
-                    if (car.getType() == type) {
-                        weightCounter -= car.getCarWeight();
-                        sizeCounter -= car.getCarSize();
-                        bargeCars.remove(car);
+            for (Car car : bargeCars) {
 
-                        count--;
-                        return car;
-                    }
-                }
+                weightCounter -= car.getCarWeight();
+                sizeCounter -= car.getCarSize();
+                bargeCars.remove(car);
+                count--;
+                return car;
             }
-
-        } finally {
-
         }
         return null;
     }

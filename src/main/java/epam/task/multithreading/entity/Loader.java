@@ -16,6 +16,7 @@ public class Loader implements Runnable {
     public Loader() {
     }
 
+
     public Loader(Barge barge, Car.Type carType, Weight weight, Size size, Semaphore sem) {
         this.barge = barge;
         this.carType = carType;
@@ -24,6 +25,7 @@ public class Loader implements Runnable {
         this.semaphore = sem;
         new Thread(this).start();
     }
+
 
     @Override
     public void run() {
@@ -41,7 +43,6 @@ public class Loader implements Runnable {
             e.printStackTrace();
         }
         semaphore.release();
-
-        System.out.println(Thread.currentThread().getName()+ " end");
+        /*System.out.println(Thread.currentThread().getName()+ " end");*/
     }
 }

@@ -21,24 +21,12 @@ public class Car {
         return carSize.getSize();
     }
 
-    public void setCarSize(Size carSize) {
-        this.carSize = carSize;
-    }
-
     public double getCarWeight() {
         return carWeight.getSize();
     }
 
-    public void setCarWeight(Weight carWeight) {
-        this.carWeight = carWeight;
-    }
-
     public Type getType() {
         return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 }
 
