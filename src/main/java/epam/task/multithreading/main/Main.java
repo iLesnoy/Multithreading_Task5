@@ -23,11 +23,13 @@ public class Main {
         Loader car6 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
         Loader car7 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
 
-
-
-
-
-
+        car1.run();
+        car2.run();
+        car3.run();
+        car4.run();
+        car5.run();
+        car6.run();
+        car7.run();
 
 
 

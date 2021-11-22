@@ -36,7 +36,7 @@ public class Loader implements Runnable {
             semaphore.acquire();
 
             for (int i = 0; i < count; i++) {
-                barge.get(carType);
+                barge.get();
             }
 
         } catch (InterruptedException e) {

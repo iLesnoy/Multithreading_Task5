@@ -43,11 +43,10 @@ public class Barge {
             return false;
         }
         return true;
-
     }
 
 
-    public Car get(Car.Type type) {
+    public Car get( ) {
         if (weightCounter >= MIN_LIFTING_CAPACITY || sizeCounter >= MIN_AREA) {
 
             for (Car car : bargeCars) {

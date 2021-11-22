@@ -10,7 +10,7 @@ import static epam.task.multithreading.entity.Barge.count;
 
 public class СarGenerator implements Runnable {
 
-    private static final Logger logger = LogManager.getLogger(СarGenerator.class);
+    private static final Logger logger = LogManager.getLogger();
     private final Barge barge;
     private final Semaphore sem;
 
@@ -29,14 +29,14 @@ public class СarGenerator implements Runnable {
             sem.acquire();
 
             for (int i = 0; i < 10; i++) {
-                logger.info("Car"+ count + " in queue for download");
+                logger.info("Car"+ count + " in queue for downloading");
                 barge.add(new Car(getRandomSize(), getRandomWeight(), getRandomType()));
             }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Thread " + Thread.currentThread().getName() + " ended");
+        /*System.out.println("Thread " + Thread.currentThread().getName() + " ended");*/
         sem.release();
 
     }
