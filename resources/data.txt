@@ -4,6 +4,6 @@ carParameters-(Volvo;PASSENGERS;1800;2250);
 carParameters-(Kia;PASSENGERS;1670;2150);
 carParameters-(Opel;TRUCK;3300;2900);
 carParameters-(Hyundai;TRUCK;2450;2500);
-carParameters-(Lada;Truck;3000;2550);
+carParameters-(Lada;TRUCK;3000;2550);
 carParameters-(Dacha;TRUCK;2840;2800);
 carParameters-(Audi;PASSENGERS;1850;1700);

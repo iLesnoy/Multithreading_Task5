@@ -70,6 +70,7 @@ public class Car implements Runnable {
     @Override
     public void run() {
         logger.info("Car " + this.type+ " ready for loading");
+        /*TimeUnit.MILLISECONDS.sleep(2);*/
         loadOnFerry();
         logger.info("Car " + this.type+ " left the barge");
     }

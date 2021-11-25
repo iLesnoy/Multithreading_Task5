@@ -10,8 +10,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Ferry implements Runnable {
 
@@ -23,7 +21,6 @@ public class Ferry implements Runnable {
     private final int MAX_AREA = 15000;
     private final AtomicLong weightCounter = new AtomicLong();
     private final AtomicLong sizeCounter = new AtomicLong();
-    private final Lock lock = new ReentrantLock();
     private final CountDownLatch latch = new CountDownLatch(1);
     private static Ferry instance;
     private boolean ferryIsSailing;
@@ -48,9 +45,9 @@ public class Ferry implements Runnable {
     }
 
 
-    public boolean addCar(Car car) {
+    public boolean addCar(Car car) throws InterruptedException {
+        latch.countDown();
         try {
-            lock.lock();
             carQueue.add(car);
             if (weightCounter.get() <= MAX_LIFTING_CAPACITY && sizeCounter.get() <= MAX_AREA) {
 
@@ -65,7 +62,7 @@ public class Ferry implements Runnable {
             return false;
 
         } finally {
-            lock.unlock();
+            latch.await();
         }
     }
 
@@ -97,13 +94,12 @@ public class Ferry implements Runnable {
                         TimeUnit.SECONDS.sleep(1);
                     }
                 }
-
+                latch.await();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        latch.countDown();
         logger.info("Cars in the queue " + ferryCars.size());
     }
 
