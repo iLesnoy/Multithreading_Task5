@@ -1,44 +1,41 @@
 package epam.task.multithreading.main;
 
 import epam.task.multithreading.entity.*;
+import epam.task.multithreading.exception.ReaderException;
+import epam.task.multithreading.parser.ParametersParser;
+import epam.task.multithreading.reader.ParametersReader;
 
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ReaderException {
 
-
-        Barge barge = new Barge();
-
-        Semaphore semaphore = new Semaphore(1,true);
-        СarGenerator сarGenerator = new СarGenerator(barge,semaphore);
-
-        Loader car1 = new Loader(barge,Car.Type.CARGO, Weight.CARGO, Size.CARGO,semaphore);
-        Loader car2 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
-        Loader car3 = new Loader(barge,Car.Type.CARGO, Weight.CARGO, Size.CARGO,semaphore);
-        Loader car4 = new Loader(barge,Car.Type.CARGO, Weight.CARGO, Size.CARGO,semaphore);
-        Loader car5 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
-        Loader car6 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
-        Loader car7 = new Loader(barge,Car.Type.PASSENGERS, Weight.PASSENGERS, Size.PASSENGERS,semaphore);
-
-
-        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        /*service.execute(сarGenerator);*/
-        service.execute(car1);
-        service.execute(car2);
-        service.execute(car3);
-        service.execute(car4);
-        service.execute(car5);
-        service.execute(car6);
-        service.execute(car7);
-        service.shutdown();
+        List<String> carType = ParametersReader.readData("resources/data.txt");
+        ParametersParser ParametersParser = new ParametersParser();
 
 
 
+        List<String> list = ParametersParser.mainData(carType);
+        Stream<Car> list1 = ParametersParser.carParameters(list);
+        List<Car>result = list1.collect(Collectors.toList());
+        Ferry ferry = new Ferry();
+
+
+        ExecutorService executorService =  Executors.newCachedThreadPool();
+        executorService.execute(ferry);
+
+        for (Car car:result) {
+            car.setFerry(ferry);
+            executorService.submit(car);
+        }
+
+        executorService.shutdown();
     }
 
 
