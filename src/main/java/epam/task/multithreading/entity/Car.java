@@ -54,9 +54,9 @@ public class Car implements Runnable {
                     TimeUnit.SECONDS.sleep(1);
                 }else {
                     if(ferry.addCar(this)){
+                        ferry.getLatch().await();
                         logger.warn("Car "+ this.type + " " + this.getName()+ " drove to the barge");
                         TimeUnit.SECONDS.sleep(5);
-                        ferry.getLatch().await();
                     }else {
                         TimeUnit.SECONDS.sleep(1);
                     }
@@ -70,7 +70,6 @@ public class Car implements Runnable {
     @Override
     public void run() {
         logger.info("Car " + this.type+ " ready for loading");
-        /*TimeUnit.MILLISECONDS.sleep(2);*/
         loadOnFerry();
         logger.info("Car " + this.type+ " left the barge");
     }
