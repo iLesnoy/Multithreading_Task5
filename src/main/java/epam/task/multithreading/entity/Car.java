@@ -53,13 +53,10 @@ public class Car implements Runnable {
                 if(ferry.ferryIsFloats()){
                     TimeUnit.SECONDS.sleep(1);
                 }else {
-                    if(ferry.addCar(this)){
-                        ferry.getLatch().await();
+                        ferry.addCar(this);
+                        ferry.getLatch().await(); //ferry waiting for loading
                         logger.warn("Car "+ this.type + " " + this.getName()+ " drove to the barge");
                         TimeUnit.SECONDS.sleep(5);
-                    }else {
-                        TimeUnit.SECONDS.sleep(1);
-                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
