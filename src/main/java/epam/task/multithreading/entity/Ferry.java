@@ -57,9 +57,9 @@ public class Ferry implements Runnable {
 
     public void addCar(Car car) {
 
+            latch.countDown();
             if (weightCounter.get() <= MAX_LIFTING_CAPACITY && sizeCounter.get() <= MAX_AREA) {
                 car.setOnBoard(true);
-                latch.countDown();
                 weightCounter.addAndGet(car.getCarWeight());
                 sizeCounter.addAndGet(car.getCarSize());
                 ferryCars.add(car);
