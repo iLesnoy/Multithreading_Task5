@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Ferry implements Runnable {
 
@@ -17,6 +18,7 @@ public class Ferry implements Runnable {
     private static final List<Car> ferryCars = new ArrayList<>();
     private static final ConcurrentLinkedQueue<Car> carQueue = new ConcurrentLinkedQueue<>();
     private static final AtomicBoolean isInitialised = new AtomicBoolean(false);
+    private static final ReentrantLock lock = new ReentrantLock();
     private final int MAX_LIFTING_CAPACITY = 15000;
     private final int MAX_AREA = 15000;
     private final AtomicLong weightCounter = new AtomicLong();
@@ -25,6 +27,8 @@ public class Ferry implements Runnable {
     private static Ferry instance;
     private boolean ferryIsSailing;
 
+    public Ferry() {
+    }
 
     public CountDownLatch getLatch() {
         return latch;
@@ -36,34 +40,33 @@ public class Ferry implements Runnable {
 
 
     public static Ferry getInstance() {
-        while (instance == null) {
-            if (isInitialised.compareAndSet(false, true)) {
-                instance = new Ferry();
+        if (!isInitialised.get()) {
+            try {
+                lock.lock();
+                if (instance == null) {
+                    instance = new Ferry();
+                    isInitialised.set(true);
+                }
+            } finally {
+                lock.unlock();
             }
         }
         return instance;
     }
 
 
-    public boolean addCar(Car car) throws InterruptedException {
-        latch.countDown();
-        try {
-            carQueue.add(car);
-            if (weightCounter.get() <= MAX_LIFTING_CAPACITY && sizeCounter.get() <= MAX_AREA) {
+    public void addCar(Car car) {
 
+            if (weightCounter.get() <= MAX_LIFTING_CAPACITY && sizeCounter.get() <= MAX_AREA) {
                 car.setOnBoard(true);
+                latch.countDown();
                 weightCounter.addAndGet(car.getCarWeight());
                 sizeCounter.addAndGet(car.getCarSize());
                 ferryCars.add(car);
-                return true;
-            }else {
+                
+            } else {
                 carQueue.add(car);
             }
-            return false;
-
-        } finally {
-            latch.await();
-        }
     }
 
 
@@ -78,23 +81,22 @@ public class Ferry implements Runnable {
     public void run() {
         while (carQueue.size() < 1) {
             logger.info("Ferry waiting for loading ");
-
             try {
                 TimeUnit.SECONDS.sleep(2);
                 if (ferryCars.size() >= 2) {
                     ferryIsSailing = true;
                     while (!ferryCars.isEmpty()) {
-                            logger.info("The ferry delivers cars with a total weight " + weightCounter );
-                            TimeUnit.SECONDS.sleep(2);
-                            ferryUnload();
-                            logger.info("The ferry deliver the cars");
-                            latch.countDown();
-                            TimeUnit.SECONDS.sleep(1);
-                            ferryIsSailing = false;
+                        logger.info("The ferry delivers cars with a total weight " + weightCounter);
+                        TimeUnit.SECONDS.sleep(2);
+                        ferryUnload();
+                        logger.info("The ferry deliver the cars");
+                        latch.countDown();
+                        TimeUnit.SECONDS.sleep(1);
+                        ferryIsSailing = false;
+                        latch.await();
                         TimeUnit.SECONDS.sleep(1);
                     }
                 }
-                latch.await();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
