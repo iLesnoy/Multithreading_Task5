@@ -90,10 +90,8 @@ public class Ferry implements Runnable {
                         TimeUnit.SECONDS.sleep(2);
                         ferryUnload();
                         logger.info("The ferry deliver the cars");
-                        latch.countDown();
                         TimeUnit.SECONDS.sleep(1);
                         ferryIsSailing = false;
-                        latch.await();
                         TimeUnit.SECONDS.sleep(1);
                     }
                 }
