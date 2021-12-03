@@ -55,7 +55,7 @@ public class Car implements Runnable {
                 }else {
                         ferry.addCar(this);
                         ferry.getLatch().await(); //ferry waiting for loading
-                        logger.warn("Car "+ this.type + " " + this.getName()+ " drove to the barge");
+                        logger.warn("Car "+ this.type + " " + this.getName()+ " drove to the ferry");
                         TimeUnit.SECONDS.sleep(5);
                 }
             } catch (InterruptedException e) {
