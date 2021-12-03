@@ -68,7 +68,7 @@ public class Car implements Runnable {
     public void run() {
         logger.info("Car " + this.type+ " ready for loading");
         loadOnFerry();
-        logger.info("Car " + this.type+ " left the barge");
+        logger.info("Car " + this.type+ " left the ferry");
     }
 
     @Override
